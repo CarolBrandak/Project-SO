@@ -32,9 +32,9 @@ int main(int argc, char *argv[])
 	int n = atoi(argv[2]);
 	int m = atoi(argv[3]);
 
-	printf("%d\n", n);
+	/*printf("%d\n", n);
 	printf("%d\n", m);
-	printf("%d\n", size);
+	printf("%d\n", size);*/
 
 	int c = 0;
 
