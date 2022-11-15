@@ -1,16 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <time.h>
+
 
 struct stat buf;
 
 int main(int argc, char *argv[])
-{
+{	
+	time_t t;
+
 	if (argc != 4)
 	{
 		printf("usage: samples file numberfrags maxfragsize\n");
 		exit(EXIT_FAILURE);
 	}
+
+	srand(time(NULL));
 
 	FILE *file = fopen(argv[1], "r");
 
@@ -19,13 +25,6 @@ int main(int argc, char *argv[])
 		perror("Error opening file");
 		exit(EXIT_FAILURE);
 	}
-
-	/*int count =0;
-	for (int c = getc(file); c != EOF; c = getc(file))
-
-		// Increment count for this character
-		count = count + 1;
-	*/
 
 	stat(argv[1], &buf);
 	int size = buf.st_size;
@@ -55,5 +54,6 @@ int main(int argc, char *argv[])
 		}
 		printf("<\n");
 	}
+
 	return (0);
 }
