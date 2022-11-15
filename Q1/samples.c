@@ -38,10 +38,14 @@ int main(int argc, char *argv[])
 	printf("%d\n", size);
 
 	int c = 0;
+	int ran =0;
 
 	for (int i = 0; i < n; i++)
-	{
-		fseek(file, rand() % (size - m) + 0, SEEK_SET);
+	{   
+		ran = rand()% (size - m) + 0;
+		printf("%d\n", ran);
+		fseek(file, ran, SEEK_SET);
+		//fseek(file, (rand()% (size - m) + 0), SEEK_SET);
 		printf(">");
 		for (int j = 0; j < m; j++)
 		{
