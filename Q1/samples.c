@@ -45,14 +45,11 @@ int main(int argc, char *argv[])
 		for (int j = 0; j < m; j++)
 		{
 			c = fgetc(file);
-			if (feof(file))
-			{
-				break;
-			}
+			if (feof(file))	break;
 
 			printf("%c", c);
 		}
-		printf("<\n");
+		printf("<");
 	}
 
 	return (0);
