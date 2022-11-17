@@ -5,37 +5,28 @@
 struct stat buf;
 
 
+
+
 int main(int argc, char *argv[])
 {
-	//printf("%s\n",argv[1]);
-
-	//FILE *file = fopen(argv[1], "r");
-	
-	int nArgv = argc;
 	
 	//read n files 
-	for(int i=1; i<nArgv; i++) {
-		//printf("%d\n",i);
-		FILE *file = fopen(argv[i], "r");
-
-		if (file == NULL)
-		{
-			perror("Error opening file");
-			exit(EXIT_FAILURE);
-		}
+	for(int i=1; i<argc; i++) {
+		// create process and execute pandoc, exec 
+		// name, -o ficheiro.epub
 		
-		stat(argv[i], &buf);
-		int size = buf.st_size;
-		//printf("%d\n", size);
 
+		//process father, does ??
 
-		//convert .txt to .epub
-
-
-
-
+		
 		//add n files to ebooks.zip
+
+
+		fclose(filetxt);
+		fclose(fileepub);
 	}
+
+
 
 
 	return (0);
