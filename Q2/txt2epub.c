@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
 		int size = buf.st_size;
 		//printf("%d\n", size);
 
-
 		//convert .txt to .epub
-
+		//Usar pandoc
+		//pandoc(argv[i]);
 
 
 
