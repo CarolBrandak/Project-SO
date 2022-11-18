@@ -1,10 +1,10 @@
-all: samples
+all: tokenring
 
-samples: samples.c
-	gcc samples.c -o samples
+tokenring: tokenring.c
+	gcc tokenring.c -o tokenring
 
 clean:
-	rm -rf samples
+	rm -rf tokenring
 	rm -rf *.exe
 	rm -rf *.o
 	
