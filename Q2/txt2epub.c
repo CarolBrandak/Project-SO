@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 	//FILE *file = fopen(argv[1], "r");
 	
 	int nArgv = argc;
+	pid_t pid = 1;
 	
 	//read n files 
 	for(int i=1; i<nArgv; i++) {
@@ -28,15 +29,36 @@ int main(int argc, char *argv[])
 		int size = buf.st_size;
 		//printf("%d\n", size);
 
+		//remove .txt terminator		
+		argv[i][sizeof(argv[i])-3] = '\0';
+
+
+		char *buffer;
+		asprintf(&buffer,"pandoc %s.txt --to=epub -o %s.epub --metadata title=\"%s\"", argv[i],argv[i],argv[i]);
+
+
+		
 		//convert .txt to .epub
-		//Usar pandoc
-		//pandoc(argv[i]);
-
-
-
-		//add n files to ebooks.zip
+		if (pid = fork() == 0) 
+		{
+			system(buffer); 
+			return(0);
+		}
+		
 	}
 
+	//add n files to ebooks.zip
 
-	return (0);
+	char tozip[] = "zip ebooks.zip ";
+
+	for (int i = 1; i < nArgv; i++)
+	{
+		strcat(tozip, argv[i]);
+		strcat(tozip, ".epub ");
+	}
+	printf("this: %s",tozip);
+	system(tozip);
+
+	
+	return(0);
 }
