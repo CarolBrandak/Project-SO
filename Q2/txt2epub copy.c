@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 	//FILE *file = fopen(argv[1], "r");
 	
 	int nArgv = argc;
-	pid_t pid = 1;
+	//pid_t pid = 1;
 	
 	//read n files 
 	for(int i=1; i<nArgv; i++) {
@@ -46,14 +46,16 @@ int main(int argc, char *argv[])
 
 	//add n files to ebooks.zip
 
-	char tozip[100] = "zip ebooks.zip ";
-
+	char tozip[1024] = "zip ebooks.zip ";
 	for (int i = 1; i < nArgv; i++)
 	{
 		strcat(tozip, argv[i]);
 		strcat(tozip, ".epub ");
 	}
+
+	printf("this: %s\n",tozip);
 	system(tozip);
+
 
 	
 	return(0);
