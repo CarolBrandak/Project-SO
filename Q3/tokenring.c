@@ -22,7 +22,6 @@ int main(int argc, char *argv[])
 	int p = atoi(argv[2]);
 	int t = atoi(argv[3]);
 
-	// Create ring of processes 
 	char i_char = 1 + '0'; 
 	char i1_char = 2 + '0';
 	char myfifo[9] = {'p', 'i', 'p', 'e', i_char, 't', 'o', i1_char};
@@ -40,6 +39,30 @@ int main(int argc, char *argv[])
 		}
 		printf("%s\n", myfifo);
 		mkfifo(myfifo,0666);
+	}
+
+	char token = '0';
+
+	// Create ring of processes 
+	for (int i=0; i<n; i++) {
+		int pid;
+		if ((pid = fork()) == 0)
+        {
+            close(p1[1]);
+            close(p2[0]);
+            int read_token;
+            read(, &read_token, sizeof(1));
+            read_token+=1;
+            write(p2[1], &read_token sizeof(1));
+            close(p1[0]);
+            close(p2[1]);
+            exit(0);
+        }
+        printf("Child %2d = %d\n", n+1, pid);
+        pid_chk += pid;
+        close(p1[0]);
+        close(p1[1]);
+        p1[0
 	}
 
 	//p1 enviar token to p2  etc 
