@@ -1,10 +1,10 @@
-all: samples
+all: txt2epub
 
-samples: samples.c
-	gcc samples.c -o samples
+txt2pub: txt2epub.c
+	gcc txt2epub.c -o txt2epub
 
 clean:
-	rm -rf samples
+	rm -rf txt2epub
 	rm -rf *.exe
 	rm -rf *.o
 	
