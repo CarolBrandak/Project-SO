@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
 	if (file == NULL)
 	{
-		perror("Error opening file");
+		perror("Error: Unable to open file.\n");
 		exit(EXIT_FAILURE);
 	}
 
