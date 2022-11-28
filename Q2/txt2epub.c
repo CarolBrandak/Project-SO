@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <string.h>
 
 struct stat buf;
-
-
-
 
 int main(int argc, char *argv[])
 {
@@ -21,24 +19,17 @@ int main(int argc, char *argv[])
 		// create process and execute pandoc, exec 
 		// name, -o ficheiro.epub
 		
-
 		//remove .txt terminator		
 		argv[i][sizeof(argv[i])-3] = '\0';
-
 
 		char *buffer;
 		asprintf(&buffer,"pandoc %s.txt --to=epub -o %s.epub --metadata title=\"%s\"", argv[i],argv[i],argv[i]);
 
-
-		
 		//convert .txt to .epub
 		system(buffer); 
-	
-		
 	}
 
 	//add n files to ebooks.zip
-
 	char tozip[100] = "zip ebooks.zip ";
 
 	for (int i = 1; i < nArgv; i++)
@@ -47,7 +38,6 @@ int main(int argc, char *argv[])
 		strcat(tozip, ".epub ");
 	}
 	system(tozip);
-
 	
 	return(0);
 }
