@@ -42,27 +42,50 @@ int main(int argc, char *argv[])
 	}
 
 	char token = '0';
+	int c1_wr;
+	int cN_rd;
+	int p1[2];
+    int p2[2];
+	c1_wr=dup(p1[1]);
+	
 
 	// Create ring of processes 
 	for (int i=0; i<n; i++) {
 		int pid;
+		pipe(p2);
+        fflush(stdout);
 		if ((pid = fork()) == 0)
         {
             close(p1[1]);
             close(p2[0]);
-            int read_token;
-            read(, &read_token, sizeof(1));
-            read_token+=1;
-            write(p2[1], &read_token sizeof(1));
+            int token;
+            read(p1[1], &token, sizeof(1));
+            token+=1;
+            write(p2[1], &token, sizeof(1));
             close(p1[0]);
             close(p2[1]);
             exit(0);
         }
         printf("Child %2d = %d\n", n+1, pid);
-        pid_chk += pid;
+        
         close(p1[0]);
         close(p1[1]);
-        p1[0
+        p1[0] = p2[0];
+        p1[1] = p2[1];
+		
+	}
+	cN_rd = p2[0];
+    close(p2[1]);
+
+    int token= read(p1[1],&token, sizeof(1));
+    write(c1_wr, &token, sizeof(1));
+    close(c1_wr);
+    read(cN_rd, &token, sizeof(1));
+    close(cN_rd);
+    printf("PID sum = %d\n", 1);
+    printf("PID chk = %d\n", 1);
+
+    return 0;
 	}
 
 	//p1 enviar token to p2  etc 
