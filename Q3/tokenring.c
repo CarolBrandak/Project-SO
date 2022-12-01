@@ -41,16 +41,14 @@ int main(int argc, char *argv[])
 		mkfifo(myfifo,0666);
 	}
 
-
-
   /* mkfifo works as a normal file but can only be edited if both sides are open (2 processes)
   */
 
-
-	char token = '0';
+	/*char token = '0';
 	int c1_wr;
 	int cN_rd;
-	int p1[2];
+	int p1[2];*/
+
 	c1_wr=dup(p1[1]);
 	char i_char = 1 + '0'; 
 	char i1_char = 2 + '0';
@@ -117,9 +115,51 @@ int main(int argc, char *argv[])
     read( final, &finaltoken, sizeof(1));
 	printf("%c\n", finaltoken);
    
+    int p2[2];
+	c1_wr=dup(p1[1]);
+	
+
+	// Create ring of processes 
+	for (int i=0; i<n; i++) {
+		int pid;
+		pipe(p2);
+        fflush(stdout);
+		if ((pid = fork()) == 0)
+        {
+            close(p1[1]);
+            close(p2[0]);
+            int token;
+            read(p1[1], &token, sizeof(1));
+            token+=1;
+            write(p2[1], &token, sizeof(1));
+            close(p1[0]);
+            close(p2[1]);
+            exit(0);
+        }
+        printf("Child %2d = %d\n", n+1, pid);
+        
+        close(p1[0]);
+        close(p1[1]);
+        p1[0] = p2[0];
+        p1[1] = p2[1];
+		
+	}
+	cN_rd = p2[0];
+    close(p2[1]);
+
+    int token= read(p1[1],&token, sizeof(1));
+    write(c1_wr, &token, sizeof(1));
+    close(c1_wr);
+    read(cN_rd, &token, sizeof(1));
+    close(cN_rd);
+    printf("PID sum = %d\n", 1);
+    printf("PID chk = %d\n", 1);
+
     return 0;
 	}
 
 	//p1 enviar token to p2  etc 
 
+  return (0);
+}
 
