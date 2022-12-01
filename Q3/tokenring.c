@@ -18,112 +18,111 @@ int main(int argc, char *argv[])
 
 	//srand(time(NULL));
 
-	int n = atoi(argv[1]);
-	int p = atoi(argv[2]);
-	int t = atoi(argv[3]);
+	int numberOfProcesses = atoi(argv[1]);
+	int probabilityBlocked = atoi(argv[2]);
+	int timeBlocked = atoi(argv[3]);
 
 	char i_char = 1 + '0'; 
 	char i1_char = 2 + '0';
-	char myfifo[9] = {'p', 'i', 'p', 'e', i_char, 't', 'o', i1_char};
+	char fifoName[9] = {'p', 'i', 'p', 'e', i_char, 't', 'o', i1_char};
 	
 	//Create the myfifo
 
-	for(int i=1; i<n+1; i++) {
+	for(int i=1; i<numberOfProcesses+1; i++) {
 		i_char = i + '0';
 		i1_char = (i+1) + '0';
-		if(i<n){
-			myfifo[4] = i_char;
-			myfifo[7] = i1_char;
+		if(i<numberOfProcesses){
+			fifoName[4] = i_char;
+			fifoName[7] = i1_char;
 		}
 		else{
-			myfifo[4] = n+'0';
-			myfifo[7] = 1+'0';
+			fifoName[4] = numberOfProcesses+'0';
+			fifoName[7] = 1+'0';
 		}
-		printf("%s\n", myfifo);
-		mkfifo(myfifo,0666);
+		printf("%s\n", fifoName);
+		mkfifo(fifoName,0666);
 	}
 
-  	// mkfifo works as a normal file but can only be edited if both sides are open (2 processes)
+	// Create ring of fifos 
+	for (int i = 1; i <= numberOfProcesses; i++) {
 
-	char token = '0';
-	int c1_wr;
-	int cN_rd;
-	int p1[2];
-
-	c1_wr=dup(p1[1]);
-	char i_char_1 = 1 + '0'; 
-	char i1_char_1 = 2 + '0';
-	char myfifo1[9] = {'p', 'i', 'p', 'e', i_char_1, 't', 'o', i1_char_1};
-	char myfifo2[9] = {'p', 'i', 'p', 'e', i_char_1, 't', 'o', i1_char_1};
-
-	// Create ring of processes 
-	for (int j=0; j<n; j++) {
-		int pid;
-		int i=1;
-	
-		i_char = i + '0';
-		i1_char = (i+1) + '0';
-		if(i<n){
-			myfifo1[4] = i_char_1;
-			myfifo1[7] = i1_char_1;
+		char nameOfFifo[9] = {'p', 'i', 'p', 'e', 'n', 't', 'o', 'n'};
+		
+		if (i == numberOfProcesses) //if it is the last fifo sent it back to first
+		{
+			nameOfFifo[4] = '0' + i;
+			nameOfFifo[7] = '0' + 1;
+		}else{
+			nameOfFifo[4] = '0' + i;
+			nameOfFifo[7] = '0' + i + 1;
 		}
-		else{
-			myfifo1[4] = n+'0';
-			myfifo1[7] = 1+'0';
-		}
-		printf("%s\n", myfifo1);
-		mkfifo(myfifo1,0666);
-		i++;
 
-		char i2_char = i + '0';
-		char i3_char = (i+1) + '0';
-		if(i<n){
-			myfifo2[4] = i2_char;
-			myfifo2[7] = i3_char;
-		}
-		else{
-			myfifo2[4] = n+'0';
-			myfifo2[7] = 1+'0';
-		}
-		printf("%s\n", myfifo2);
-		mkfifo(myfifo2,0666);
-
-		if ((pid = fork()) == 0)
-        {   int a=open(myfifo1);
-          
-            int token;
-            read(a, &token, sizeof(1));
-            token+=1;
-			int b = open(myfifo2);
-            write(b, &token, sizeof(1));
-        
-            exit(0);
-        }
-		i++;
+		mkfifo(nameOfFifo,0666);
 	}
 	
-	char finaltoken;
-	char fmkfifo[9]={'p', 'i', 'p', 'e', n, 't', 'o', '1'};
-	int final =open(fmkfifo);
-    read( final, &finaltoken, sizeof(1));
-	printf("%c\n", finaltoken);
-   
-    int p2[2];
-	c1_wr=dup(p1[1]);
-	
-	cN_rd = p2[0];
-    close(p2[1]);
+	//Create ring of processes
+	for (int i = 1; i <= numberOfProcesses; i++) {	
 
-    int token_1= read(p1[1],&token, sizeof(1));
-    write(c1_wr, &token, sizeof(1));
-    close(c1_wr);
-    read(cN_rd, &token, sizeof(1));
-    close(cN_rd);
-    printf("PID sum = %d\n", 1);
-    printf("PID chk = %d\n", 1);
+		char readFifo[9] = {'p', 'i', 'p', 'e', 'n', 't', 'o', 'n'};
+		char writeFifo[9] = {'p', 'i', 'p', 'e', 'n', 't', 'o', 'n'};
+
+		if (i == numberOfProcesses) //if it is the last fifo sent it back to first
+		{
+			writeFifo[4] = '0' + i;
+			writeFifo[7] = '0' + 1;
+
+			readFifo[4] = '0' + i - 1;
+			readFifo[7] = '0' + i;
+		}else if(i == 1){
+			writeFifo[4] = '0' + i;
+			writeFifo[7] = '0' + i + 1;
+
+			readFifo[4] = '0' + numberOfProcesses;
+			readFifo[7] = '0' + i;
+		}else{
+			writeFifo[4] = '0' + i;
+			writeFifo[7] = '0' + i + 1;
+
+			readFifo[4] = '0' + i - 1;
+			readFifo[7] = '0' + i;
+		}
+
+		printf("i = %d, write = %s, read = %s\n",i,writeFifo,readFifo);
+		
+		if (!fork()){
+			int token;
+			int started = 0;
+				
+			if (strcmp(writeFifo,"pipe1to2") == 0  && !started){
+
+				started = 1;
+				token = 0;
+				printf("started with token = %d \n",token);
+
+				int write_fifo = open(writeFifo);
+				write(write_fifo, token, sizeof(token));
+				close(writeFifo);
+			}
+
+			while (1){
+				int read_fifo = open(readFifo);
+				read(read_fifo, token, sizeof(token));
+				close(readFifo);
+
+				printf("read from = %s with token = %d \n",readFifo, token);
+				token++;
+				
+				int write_fifo = open(writeFifo);
+				write(write_fifo, token, sizeof(token));
+				close(write_fifo);
+
+			}
+
+			exit(0);
+		}
+	}
+
+	wait(NULL);
 
     return 0;
 }
-
-	//p1 enviar token to p2  etc 
-
