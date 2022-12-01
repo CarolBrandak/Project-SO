@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
 		indexes[cnt] = r;
 		// Procura no ficheiro o index podendo este ser 0
 		fseek(file, r-1, SEEK_SET);
+    
 		printf(">");
 		for (int j = 0; j < m; j++)
 		{
