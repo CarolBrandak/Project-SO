@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
 	char i1_char = 2 + '0';
 	char myfifo[9] = {'p', 'i', 'p', 'e', i_char, 't', 'o', i1_char};
 	
+	//Create the myfifo
+
 	for(int i=1; i<n+1; i++) {
 		i_char = i + '0';
 		i1_char = (i+1) + '0';
@@ -41,39 +43,36 @@ int main(int argc, char *argv[])
 		mkfifo(myfifo,0666);
 	}
 
-  /* mkfifo works as a normal file but can only be edited if both sides are open (2 processes)
-  */
+  	// mkfifo works as a normal file but can only be edited if both sides are open (2 processes)
 
-	/*char token = '0';
+	char token = '0';
 	int c1_wr;
 	int cN_rd;
-	int p1[2];*/
+	int p1[2];
 
 	c1_wr=dup(p1[1]);
-	char i_char = 1 + '0'; 
-	char i1_char = 2 + '0';
-	char myfifo[9] = {'p', 'i', 'p', 'e', i_char, 't', 'o', i1_char};
-	char myfifo2[9] = {'p', 'i', 'p', 'e', i_char, 't', 'o', i1_char};
+	char i_char_1 = 1 + '0'; 
+	char i1_char_1 = 2 + '0';
+	char myfifo1[9] = {'p', 'i', 'p', 'e', i_char_1, 't', 'o', i1_char_1};
+	char myfifo2[9] = {'p', 'i', 'p', 'e', i_char_1, 't', 'o', i1_char_1};
 
 	// Create ring of processes 
 	for (int j=0; j<n; j++) {
 		int pid;
 		int i=1;
-		
-	
 	
 		i_char = i + '0';
 		i1_char = (i+1) + '0';
 		if(i<n){
-			myfifo[4] = i_char;
-			myfifo[7] = i1_char;
+			myfifo1[4] = i_char_1;
+			myfifo1[7] = i1_char_1;
 		}
 		else{
-			myfifo[4] = n+'0';
-			myfifo[7] = 1+'0';
+			myfifo1[4] = n+'0';
+			myfifo1[7] = 1+'0';
 		}
-		printf("%s\n", myfifo);
-		mkfifo(myfifo,0666);
+		printf("%s\n", myfifo1);
+		mkfifo(myfifo1,0666);
 		i++;
 
 		char i2_char = i + '0';
@@ -89,10 +88,8 @@ int main(int argc, char *argv[])
 		printf("%s\n", myfifo2);
 		mkfifo(myfifo2,0666);
 
-	
-
 		if ((pid = fork()) == 0)
-        {   int a=open(myfifo);
+        {   int a=open(myfifo1);
           
             int token;
             read(a, &token, sizeof(1));
@@ -102,11 +99,7 @@ int main(int argc, char *argv[])
         
             exit(0);
         }
-      
-        
-    
 		i++;
-		
 	}
 	
 	char finaltoken;
@@ -118,36 +111,10 @@ int main(int argc, char *argv[])
     int p2[2];
 	c1_wr=dup(p1[1]);
 	
-
-	// Create ring of processes 
-	for (int i=0; i<n; i++) {
-		int pid;
-		pipe(p2);
-        fflush(stdout);
-		if ((pid = fork()) == 0)
-        {
-            close(p1[1]);
-            close(p2[0]);
-            int token;
-            read(p1[1], &token, sizeof(1));
-            token+=1;
-            write(p2[1], &token, sizeof(1));
-            close(p1[0]);
-            close(p2[1]);
-            exit(0);
-        }
-        printf("Child %2d = %d\n", n+1, pid);
-        
-        close(p1[0]);
-        close(p1[1]);
-        p1[0] = p2[0];
-        p1[1] = p2[1];
-		
-	}
 	cN_rd = p2[0];
     close(p2[1]);
 
-    int token= read(p1[1],&token, sizeof(1));
+    int token_1= read(p1[1],&token, sizeof(1));
     write(c1_wr, &token, sizeof(1));
     close(c1_wr);
     read(cN_rd, &token, sizeof(1));
@@ -156,10 +123,7 @@ int main(int argc, char *argv[])
     printf("PID chk = %d\n", 1);
 
     return 0;
-	}
+}
 
 	//p1 enviar token to p2  etc 
-
-  return (0);
-}
 
